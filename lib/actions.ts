@@ -21,7 +21,7 @@ import type {
 export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const user = await loginLocal(email);
-  if (!user) return; // stay on login; page shows hint
+  if (!user) redirect("/login?error=1"); // unknown email — surface feedback
   redirect("/dashboard");
 }
 
@@ -256,15 +256,15 @@ export async function setFindingStatusAction(formData: FormData) {
   });
 
   // On acceptance, propagate the finding into the vendor questionnaire as an
-  // EXTRACTED answer (only accepted findings become authoritative).
+  // EXTRACTED answer (only accepted findings become authoritative). We only map
+  // to free-TEXT questions: enum/bool questions can't be answered from a prose
+  // summary, so a human sets those explicitly rather than us stuffing a sentence
+  // into a field whose <select> has no matching option.
   if (finding && status === "ACCEPTED") {
     const clauseToQuestion: Record<string, string> = {
-      data_used_for_training: "customer_data_used_for_training",
       data_residency: "data_residency_regions",
       sub_processors: "sub_processors_list",
-      audit_rights: "audit_rights",
       liability_cap: "liability_cap",
-      data_deletion: "data_deletion_on_termination",
     };
     const qKey = clauseToQuestion[finding.clause_type];
     if (qKey) {

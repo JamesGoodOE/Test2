@@ -2,8 +2,13 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { loginAction } from "@/lib/actions";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   if (await getSession()) redirect("/dashboard");
+  const { error } = await searchParams;
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
       <div className="card">
@@ -11,6 +16,12 @@ export default async function LoginPage() {
         <p className="mt-1 text-sm text-slate-500">
           AI Governance &amp; Compliance Platform
         </p>
+
+        {error && (
+          <p className="mt-4 rounded-md bg-red-50 p-2 text-sm text-red-700">
+            No account found for that email. Try a demo account below.
+          </p>
+        )}
 
         <form action={loginAction} className="mt-6 space-y-4">
           <div>

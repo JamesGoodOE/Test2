@@ -19,14 +19,17 @@ export default async function DashboardPage() {
 
   // KPIs
   const byTier: Record<string, number> = { PROHIBITED: 0, HIGH: 0, LIMITED: 0, MINIMAL: 0 };
-  let unclassified = 0;
-  let openGaps = 0;
   for (const s of systems) {
     if (s.risk_tier) byTier[s.risk_tier] += 1;
-    else unclassified += 1;
-    const controls = await repo.listControls(tenantId, s.id);
-    openGaps += buildSystemGapReport(s, controls).open_gaps.length;
   }
+  // Fetch controls for all systems in parallel, then sum open gaps.
+  const controlsPerSystem = await Promise.all(
+    systems.map((s) => repo.listControls(tenantId, s.id)),
+  );
+  const openGaps = systems.reduce(
+    (sum, s, i) => sum + buildSystemGapReport(s, controlsPerSystem[i]).open_gaps.length,
+    0,
+  );
 
   return (
     <div className="space-y-8">
