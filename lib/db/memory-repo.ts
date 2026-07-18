@@ -78,6 +78,17 @@ function db(): Store {
 // Deep-ish clone so callers cannot mutate internal state by reference.
 const clone = <T>(v: T): T => (v == null ? v : JSON.parse(JSON.stringify(v)));
 
+// Parent-tenant ownership guards. Child records (answers, controls, vendor
+// answers, findings) are keyed by their parent id; these ensure a caller can
+// only reach children whose parent belongs to the caller's tenant — the
+// in-memory analogue of the RLS tenant_isolation policy in db/schema.sql.
+const ownsSystem = (tenantId: string, id: string) =>
+  db().systems.some((s) => s.tenant_id === tenantId && s.id === id);
+const ownsVendor = (tenantId: string, id: string) =>
+  db().vendors.some((v) => v.tenant_id === tenantId && v.id === id);
+const ownsContract = (tenantId: string, id: string) =>
+  db().contracts.some((c) => c.tenant_id === tenantId && c.id === id);
+
 export class MemoryRepository implements Repository {
   async getTenant(tenantId: string) {
     return clone(db().tenants.find((t) => t.id === tenantId) ?? null);
@@ -155,12 +166,14 @@ export class MemoryRepository implements Repository {
 
   // ── Classification answers ──
   async getAnswers(tenantId: string, systemId: string) {
+    if (!ownsSystem(tenantId, systemId)) return {};
     const rows = db().answers.filter((a) => a.ai_system_id === systemId);
     const out: ClassificationAnswers = {};
     for (const r of rows) out[r.question_key] = r.answer;
     return clone(out);
   }
   async setAnswers(tenantId: string, systemId: string, answers: ClassificationAnswers, answeredBy: string) {
+    if (!ownsSystem(tenantId, systemId)) return;
     const store = db();
     store.answers = store.answers.filter((a) => a.ai_system_id !== systemId);
     for (const [key, value] of Object.entries(answers)) {
@@ -176,9 +189,11 @@ export class MemoryRepository implements Repository {
 
   // ── Controls ──
   async listControls(tenantId: string, systemId: string) {
+    if (!ownsSystem(tenantId, systemId)) return [];
     return clone(db().controls.filter((c) => c.ai_system_id === systemId));
   }
   async replaceControls(tenantId: string, systemId: string, controlKeys: string[]) {
+    if (!ownsSystem(tenantId, systemId)) return [];
     const store = db();
     const existing = store.controls.filter((c) => c.ai_system_id === systemId);
     const keep: Control[] = [];
@@ -205,6 +220,7 @@ export class MemoryRepository implements Repository {
     controlKey: string,
     patch: { status?: Control["status"]; evidence_note?: string | null },
   ) {
+    if (!ownsSystem(tenantId, systemId)) return null;
     const c = db().controls.find((x) => x.ai_system_id === systemId && x.control_key === controlKey);
     if (!c) return null;
     if (patch.status) c.status = patch.status;
@@ -237,6 +253,7 @@ export class MemoryRepository implements Repository {
     return clone(v);
   }
   async getVendorAnswers(tenantId: string, vendorId: string) {
+    if (!ownsVendor(tenantId, vendorId)) return [];
     return clone(db().vendorAnswers.filter((a) => a.vendor_id === vendorId));
   }
   async setVendorAnswer(
@@ -246,6 +263,7 @@ export class MemoryRepository implements Repository {
     answer: string,
     source: VendorQuestionnaireAnswer["source"],
   ) {
+    if (!ownsVendor(tenantId, vendorId)) return;
     const store = db();
     const existing = store.vendorAnswers.find((a) => a.vendor_id === vendorId && a.question_key === questionKey);
     if (existing) {
@@ -295,6 +313,7 @@ export class MemoryRepository implements Repository {
     return clone(db().findings.filter((f) => f.tenant_id === tenantId && f.contract_id === contractId));
   }
   async createFindings(tenantId: string, contractId: string, findings: NewFindingInput[]) {
+    if (!ownsContract(tenantId, contractId)) return [];
     const created: ContractFinding[] = findings.map((f) => ({
       id: uid(),
       tenant_id: tenantId,

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { extname, join, resolve, sep } from "node:path";
 import { getRepository } from "@/lib/db";
 import { getSession, requireRole, loginLocal, logout } from "@/lib/auth/session";
 import { classify, CLASSIFIER_VERSION } from "@/lib/classifier/engine";
@@ -199,10 +199,19 @@ export async function uploadContractAction(formData: FormData) {
   const repo = getRepository();
 
   // Store original to local object storage (Supabase Storage in production).
+  // The on-disk name is derived ONLY from the server-generated fileId plus a
+  // validated extension — never from the client-supplied file.name (which is
+  // attacker-controlled and could contain path-traversal sequences). The
+  // display name is persisted separately on the contract row.
   const fileId = globalThis.crypto.randomUUID();
-  const dir = join(process.cwd(), ".data", "uploads");
+  const ext = extname(file.name).toLowerCase().replace(/[^a-z0-9.]/g, "");
+  const dir = resolve(join(process.cwd(), ".data", "uploads"));
   await mkdir(dir, { recursive: true });
-  await writeFile(join(dir, `${fileId}-${file.name}`), buffer);
+  const target = resolve(join(dir, `${fileId}${ext}`));
+  if (target !== dir && !target.startsWith(dir + sep)) {
+    throw new Error("Invalid upload path");
+  }
+  await writeFile(target, buffer);
 
   const contract = await repo.createContract(tenantId, {
     vendor_id: vendorId,
