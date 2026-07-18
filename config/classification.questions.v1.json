@@ -1,0 +1,115 @@
+{
+  "version": "v1",
+  "title": "EU AI Act — System Classification Questionnaire",
+  "description": "Guided questionnaire used by the deterministic classifier. Answers plus the rule-set version fully determine the risk tier — no model is involved in tiering.",
+  "legal_notice": "This tool provides compliance tooling, not legal advice.",
+  "questions": [
+    {
+      "key": "deploys_in_eu",
+      "order": 1,
+      "type": "bool",
+      "prompt": "Is the system placed on the EU market, put into service in the EU, or is its output used within the EU?",
+      "help": "The EU AI Act applies based on an EU nexus. This is recorded for applicability context; it does not change the risk tier.",
+      "citation": "Art. 2"
+    },
+    {
+      "key": "social_scoring",
+      "order": 2,
+      "type": "bool",
+      "prompt": "Does the system evaluate or classify people over time based on social behaviour or personal characteristics, leading to detrimental or unjustified treatment?",
+      "help": "General-purpose social scoring of natural persons by public or private actors.",
+      "citation": "Art. 5(1)(c)"
+    },
+    {
+      "key": "realtime_biometric_public",
+      "order": 3,
+      "type": "bool",
+      "prompt": "Does the system perform real-time remote biometric identification of people in publicly accessible spaces for law-enforcement purposes?",
+      "help": "Narrow law-enforcement exemptions exist but are out of scope for self-classification here.",
+      "citation": "Art. 5(1)(h)"
+    },
+    {
+      "key": "emotion_recognition_work_edu",
+      "order": 4,
+      "type": "bool",
+      "prompt": "Does the system infer the emotions of individuals in the workplace or in education settings?",
+      "help": "Except where used strictly for medical or safety reasons.",
+      "citation": "Art. 5(1)(f)"
+    },
+    {
+      "key": "biometric_categorization_sensitive",
+      "order": 5,
+      "type": "bool",
+      "prompt": "Does the system categorise people using biometric data to infer sensitive attributes (race, political opinions, trade-union membership, religion, sex life, sexual orientation)?",
+      "help": "Excludes lawful labelling/filtering in the law-enforcement context.",
+      "citation": "Art. 5(1)(g)"
+    },
+    {
+      "key": "predictive_policing_profiling",
+      "order": 6,
+      "type": "bool",
+      "prompt": "Does the system assess or predict the risk of a person committing a criminal offence based solely on profiling or personality traits?",
+      "help": "Does not cover systems supporting human assessment based on objective, verifiable facts linked to criminal activity.",
+      "citation": "Art. 5(1)(d)"
+    },
+    {
+      "key": "untargeted_scraping_facial",
+      "order": 7,
+      "type": "bool",
+      "prompt": "Does the system create or expand facial-recognition databases through untargeted scraping of images from the internet or CCTV?",
+      "help": "",
+      "citation": "Art. 5(1)(e)"
+    },
+    {
+      "key": "safety_component_regulated_product",
+      "order": 8,
+      "type": "bool",
+      "prompt": "Is the AI a safety component of a product — or itself a product — covered by EU harmonisation legislation (Annex I) that requires third-party conformity assessment?",
+      "help": "E.g. machinery, medical devices, toys, lifts. Triggers high-risk under Art. 6(1).",
+      "citation": "Art. 6(1)"
+    },
+    {
+      "key": "annex_iii_domain",
+      "order": 9,
+      "type": "enum",
+      "prompt": "Which Annex III high-risk use category best describes the system's intended purpose?",
+      "options": [
+        { "value": "none", "label": "None of these" },
+        { "value": "biometrics", "label": "Biometric identification / categorisation (permitted uses)" },
+        { "value": "critical_infrastructure", "label": "Safety of critical infrastructure (water, gas, electricity, traffic)" },
+        { "value": "education", "label": "Education & vocational training (admissions, scoring, proctoring)" },
+        { "value": "employment", "label": "Employment / HR (recruitment, screening, task allocation, evaluation)" },
+        { "value": "essential_services", "label": "Access to essential private/public services (credit scoring, benefits, insurance pricing)" },
+        { "value": "law_enforcement", "label": "Law enforcement" },
+        { "value": "migration", "label": "Migration, asylum & border control" },
+        { "value": "justice", "label": "Administration of justice & democratic processes" }
+      ],
+      "help": "Select the closest category. 'None' if the system's purpose is not listed in Annex III.",
+      "citation": "Annex III"
+    },
+    {
+      "key": "annex_iii_derogation",
+      "order": 10,
+      "type": "bool",
+      "prompt": "If an Annex III category was selected: does the system perform only a narrow procedural task, improve the result of a prior human activity, detect decision-making patterns without replacing human judgement, or perform a purely preparatory task — AND not profile people or materially influence decisions?",
+      "help": "This is the Art. 6(3) derogation. If ALL conditions hold, an otherwise-Annex-III system is NOT high-risk. Leave false if unsure.",
+      "citation": "Art. 6(3)"
+    },
+    {
+      "key": "interacts_with_humans",
+      "order": 11,
+      "type": "bool",
+      "prompt": "Does the system directly interact with natural persons (e.g. a chatbot or virtual assistant)?",
+      "help": "Triggers a transparency obligation to inform people they are interacting with an AI system.",
+      "citation": "Art. 50(1)"
+    },
+    {
+      "key": "generates_synthetic_content",
+      "order": 12,
+      "type": "bool",
+      "prompt": "Does the system generate or manipulate image, audio, video, or text content (including deepfakes or generative AI output)?",
+      "help": "Triggers a transparency obligation to mark/disclose AI-generated or manipulated content.",
+      "citation": "Art. 50(2), Art. 50(4)"
+    }
+  ]
+}

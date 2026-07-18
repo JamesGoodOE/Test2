@@ -1,0 +1,121 @@
+{
+  "version": "v1",
+  "questionnaire_version": "v1",
+  "description": "Ordered, deterministic rule set for EU AI Act risk tiering. The engine evaluates rules top-to-bottom; the FIRST rule whose conditions all match assigns the tier and halts. If none match, the default tier applies. Precedence: PROHIBITED > HIGH > LIMITED > MINIMAL.",
+  "default": {
+    "tier": "MINIMAL",
+    "citation": "Recital 165",
+    "rationale": "No prohibited practice, Annex III / Annex I high-risk trigger, or transparency trigger was identified. The system is treated as minimal-risk; voluntary codes of conduct are encouraged."
+  },
+  "rules": [
+    {
+      "id": "P-social-scoring",
+      "order": 1,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(c)",
+      "all": [{ "question": "social_scoring", "op": "is_true" }],
+      "rationale": "Performs social scoring of natural persons leading to detrimental or unjustified treatment — a prohibited practice."
+    },
+    {
+      "id": "P-realtime-biometric-public",
+      "order": 2,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(h)",
+      "all": [{ "question": "realtime_biometric_public", "op": "is_true" }],
+      "rationale": "Real-time remote biometric identification in publicly accessible spaces for law enforcement — a prohibited practice (subject to narrow statutory exemptions not assessed here)."
+    },
+    {
+      "id": "P-emotion-recognition-work-edu",
+      "order": 3,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(f)",
+      "all": [{ "question": "emotion_recognition_work_edu", "op": "is_true" }],
+      "rationale": "Infers emotions of individuals in workplace or education settings — a prohibited practice (outside medical/safety exceptions)."
+    },
+    {
+      "id": "P-biometric-categorisation-sensitive",
+      "order": 4,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(g)",
+      "all": [{ "question": "biometric_categorization_sensitive", "op": "is_true" }],
+      "rationale": "Biometric categorisation inferring sensitive attributes — a prohibited practice."
+    },
+    {
+      "id": "P-predictive-policing",
+      "order": 5,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(d)",
+      "all": [{ "question": "predictive_policing_profiling", "op": "is_true" }],
+      "rationale": "Predicts criminal offending based solely on profiling or personality traits — a prohibited practice."
+    },
+    {
+      "id": "P-untargeted-scraping",
+      "order": 6,
+      "tier": "PROHIBITED",
+      "citation": "Art. 5(1)(e)",
+      "all": [{ "question": "untargeted_scraping_facial", "op": "is_true" }],
+      "rationale": "Builds or expands facial-recognition databases via untargeted scraping — a prohibited practice."
+    },
+    {
+      "id": "H-annex-i-safety-component",
+      "order": 7,
+      "tier": "HIGH",
+      "citation": "Art. 6(1)",
+      "all": [{ "question": "safety_component_regulated_product", "op": "is_true" }],
+      "rationale": "The AI is a safety component of, or is itself, a product covered by Annex I harmonisation law requiring third-party conformity assessment — high-risk under Art. 6(1)."
+    },
+    {
+      "id": "H-annex-iii",
+      "order": 8,
+      "tier": "HIGH",
+      "citation": "Art. 6(2), Annex III",
+      "all": [
+        { "question": "annex_iii_domain", "op": "neq", "value": "none" },
+        { "question": "annex_iii_derogation", "op": "is_false" }
+      ],
+      "rationale": "Intended purpose falls within an Annex III high-risk category and no Art. 6(3) derogation applies — high-risk.",
+      "dynamic_citation": {
+        "question": "annex_iii_domain",
+        "map": {
+          "biometrics": "Annex III(1)",
+          "critical_infrastructure": "Annex III(2)",
+          "education": "Annex III(3)",
+          "employment": "Annex III(4)",
+          "essential_services": "Annex III(5)",
+          "law_enforcement": "Annex III(6)",
+          "migration": "Annex III(7)",
+          "justice": "Annex III(8)"
+        }
+      }
+    },
+    {
+      "id": "H-annex-iii-derogation-note",
+      "order": 9,
+      "tier": "LIMITED_OR_MINIMAL_CONTINUE",
+      "citation": "Art. 6(3)",
+      "all": [
+        { "question": "annex_iii_domain", "op": "neq", "value": "none" },
+        { "question": "annex_iii_derogation", "op": "is_true" }
+      ],
+      "continue": true,
+      "note": "Annex III category selected but Art. 6(3) derogation asserted — not high-risk on that basis. Evaluation continues to transparency and minimal tiers. The derogation assertion must be documented and, where required, registered.",
+      "rationale": "Art. 6(3) derogation asserted for an Annex III system."
+    },
+    {
+      "id": "L-human-interaction",
+      "order": 10,
+      "tier": "LIMITED",
+      "citation": "Art. 50(1)",
+      "all": [{ "question": "interacts_with_humans", "op": "is_true" }],
+      "rationale": "Directly interacts with natural persons — subject to transparency obligations (inform users they are interacting with an AI)."
+    },
+    {
+      "id": "L-synthetic-content",
+      "order": 11,
+      "tier": "LIMITED",
+      "citation": "Art. 50(2), Art. 50(4)",
+      "all": [{ "question": "generates_synthetic_content", "op": "is_true" }],
+      "rationale": "Generates or manipulates synthetic content — subject to transparency/marking obligations."
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "version": "v1",
+  "description": "Required-controls catalogue keyed by risk tier. When a system is classified, the controls whose `applies_to` includes its tier are instantiated as a checklist (initial status MISSING).",
+  "controls": [
+    {
+      "key": "prohibited_cease_use",
+      "title": "Cease or do not deploy",
+      "description": "Prohibited AI practices may not be placed on the market, put into service, or used. Discontinue or redesign so the prohibited practice is removed.",
+      "citation": "Art. 5",
+      "applies_to": ["PROHIBITED"]
+    },
+    {
+      "key": "risk_management_system",
+      "title": "Risk management system",
+      "description": "Establish, document and maintain a continuous risk management system across the lifecycle.",
+      "citation": "Art. 9",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "data_governance",
+      "title": "Data & data governance",
+      "description": "Training, validation and testing datasets meet quality criteria; examine for bias; ensure relevance and representativeness.",
+      "citation": "Art. 10",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "technical_documentation",
+      "title": "Technical documentation",
+      "description": "Maintain Annex IV technical documentation demonstrating conformity, kept up to date.",
+      "citation": "Art. 11",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "record_keeping_logging",
+      "title": "Record-keeping / logging",
+      "description": "Automatic recording of events (logs) over the system's lifetime to ensure traceability.",
+      "citation": "Art. 12",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "transparency_instructions",
+      "title": "Transparency & instructions for use",
+      "description": "Design for sufficient transparency; provide clear instructions for use to deployers.",
+      "citation": "Art. 13",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "human_oversight",
+      "title": "Human oversight",
+      "description": "Design and document effective human oversight measures (including the ability to intervene or stop the system).",
+      "citation": "Art. 14",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "accuracy_robustness_security",
+      "title": "Accuracy, robustness & cybersecurity",
+      "description": "Achieve and monitor appropriate levels of accuracy, robustness and cybersecurity; declare accuracy metrics.",
+      "citation": "Art. 15",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "quality_management_system",
+      "title": "Quality management system",
+      "description": "Providers must operate a documented quality management system.",
+      "citation": "Art. 17",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "fundamental_rights_impact_assessment",
+      "title": "Fundamental rights impact assessment (deployers)",
+      "description": "Certain deployers must perform and document a fundamental rights impact assessment before use.",
+      "citation": "Art. 27",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "eu_database_registration",
+      "title": "EU database registration",
+      "description": "Register the high-risk system (or its deployment, for public authorities) in the EU database.",
+      "citation": "Art. 49",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "post_market_monitoring",
+      "title": "Post-market monitoring",
+      "description": "Establish a post-market monitoring plan and report serious incidents.",
+      "citation": "Art. 72, Art. 73",
+      "applies_to": ["HIGH"]
+    },
+    {
+      "key": "ai_interaction_disclosure",
+      "title": "AI interaction disclosure",
+      "description": "Inform natural persons that they are interacting with an AI system, unless obvious from context.",
+      "citation": "Art. 50(1)",
+      "applies_to": ["LIMITED"]
+    },
+    {
+      "key": "synthetic_content_marking",
+      "title": "Synthetic content marking",
+      "description": "Mark AI-generated or manipulated audio/image/video/text as artificially generated in a machine-readable way.",
+      "citation": "Art. 50(2)",
+      "applies_to": ["LIMITED"]
+    },
+    {
+      "key": "deepfake_disclosure",
+      "title": "Deepfake / content disclosure",
+      "description": "Disclose deepfakes and, for public-interest text, that content is AI-generated.",
+      "citation": "Art. 50(4)",
+      "applies_to": ["LIMITED"]
+    },
+    {
+      "key": "voluntary_code_of_conduct",
+      "title": "Voluntary code of conduct",
+      "description": "Consider adhering to voluntary codes of conduct and internal AI policy even where no mandatory obligation applies.",
+      "citation": "Art. 95",
+      "applies_to": ["MINIMAL"]
+    }
+  ]
+}
