@@ -1,0 +1,49 @@
+{
+  "prompt_version": "contract-extraction/v1",
+  "default_model": "claude-sonnet-5",
+  "description": "Extracts AI-relevant clauses from a vendor contract/DPA into structured findings. Findings are DRAFTS: they land as PENDING and require human acceptance before entering the register or an evidence pack. The model is NEVER used for EU AI Act risk tiering.",
+  "clause_types": [
+    { "key": "data_used_for_training", "label": "Customer data used for model training", "why": "Determines whether tenant data trains the vendor's models." },
+    { "key": "data_residency", "label": "Data residency & international transfers", "why": "Where data is stored/processed and the transfer mechanism." },
+    { "key": "sub_processors", "label": "Sub-processors", "why": "Who else processes the data and notice obligations." },
+    { "key": "audit_rights", "label": "Audit rights", "why": "Whether the customer can audit the vendor." },
+    { "key": "liability_cap", "label": "Liability cap", "why": "Contractual limits on vendor liability." },
+    { "key": "ip_indemnity", "label": "IP indemnity (generative output)", "why": "Protection against IP claims on generated content." },
+    { "key": "security_obligations", "label": "Security obligations & incident notice", "why": "Security commitments and breach-notification SLAs." },
+    { "key": "data_retention", "label": "Data retention", "why": "How long prompts/outputs/data are retained." },
+    { "key": "data_deletion", "label": "Data deletion on termination", "why": "Deletion/return of data at end of term." },
+    { "key": "confidentiality", "label": "Confidentiality", "why": "Confidentiality obligations relevant to AI inputs/outputs." }
+  ],
+  "risk_flags": ["NONE", "LOW", "MEDIUM", "HIGH"],
+  "system": "You are an AI governance analyst assisting a human reviewer. Extract only AI- and data-protection-relevant clauses from the supplied vendor contract text. Do not give legal advice, do not invent clauses, and do not classify EU AI Act risk tiers. If a clause type is absent, say so explicitly with an 'ABSENT' summary and a risk_flag reflecting the risk of that silence. Quote the source text you relied on so a human can verify it. Every finding is a draft for human review.",
+  "instructions": [
+    "Read the contract text and, for each clause_type, produce at most one finding for the most relevant passage (or an ABSENT finding if none is present).",
+    "extracted_text_summary: 1–3 sentence plain-English summary of what the contract says (or 'ABSENT: <clause_type> not addressed').",
+    "source_quote: the shortest verbatim quote from the contract that supports the summary (empty string if ABSENT).",
+    "source_location: a hint such as a section/clause number or page if present in the text.",
+    "risk_flag: one of NONE/LOW/MEDIUM/HIGH from the customer's governance perspective (e.g. 'data used for training with no opt-out' = HIGH; strong deletion + EU residency = NONE/LOW).",
+    "llm_confidence: a number 0.0–1.0 for how confident you are the extraction is accurate.",
+    "Return ONLY the structured tool/JSON output. No prose outside it."
+  ],
+  "output_schema": {
+    "type": "object",
+    "required": ["findings"],
+    "properties": {
+      "findings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["clause_type", "extracted_text_summary", "risk_flag", "llm_confidence"],
+          "properties": {
+            "clause_type": { "type": "string" },
+            "extracted_text_summary": { "type": "string" },
+            "source_quote": { "type": "string" },
+            "source_location": { "type": "string" },
+            "risk_flag": { "type": "string", "enum": ["NONE", "LOW", "MEDIUM", "HIGH"] },
+            "llm_confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    }
+  }
+}

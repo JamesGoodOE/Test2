@@ -1,0 +1,74 @@
+{
+  "version": "v1",
+  "title": "Vendor AI Due Diligence Questionnaire",
+  "description": "Structured vendor questionnaire. Answers may be entered manually or pre-filled from accepted contract findings (source EXTRACTED). Every extracted answer requires human acceptance before it is treated as authoritative.",
+  "sections": [
+    {
+      "key": "model_provider",
+      "title": "Model & provider",
+      "questions": [
+        { "key": "model_provider", "type": "text", "prompt": "Which foundation/model provider(s) underpin the service?", "ai_relevant": true, "clause_type": "model_provider" },
+        { "key": "models_used", "type": "text", "prompt": "Which specific model names/versions are used?", "ai_relevant": true },
+        { "key": "hosting_model", "type": "enum", "prompt": "Is the model self-hosted by the vendor or accessed via a third-party API?", "options": ["self_hosted", "third_party_api", "hybrid", "unknown"], "ai_relevant": true },
+        { "key": "eu_ai_act_role", "type": "enum", "prompt": "What is the vendor's role under the EU AI Act?", "options": ["provider", "deployer", "distributor", "importer", "not_applicable", "unknown"], "ai_relevant": true },
+        { "key": "gpai_documentation", "type": "bool", "prompt": "Is GPAI / model documentation (incl. Art. 53 technical documentation) available?", "ai_relevant": true }
+      ]
+    },
+    {
+      "key": "training_data",
+      "title": "Training data & model improvement",
+      "questions": [
+        { "key": "customer_data_used_for_training", "type": "enum", "prompt": "Is customer data used to train, fine-tune or improve models?", "options": ["no", "opt_in_only", "opt_out_available", "yes"], "ai_relevant": true, "clause_type": "data_used_for_training" },
+        { "key": "training_opt_out_available", "type": "bool", "prompt": "Is an opt-out from model training/improvement available?", "ai_relevant": true, "clause_type": "data_used_for_training" },
+        { "key": "prompt_output_retention", "type": "text", "prompt": "What is the retention period for prompts and outputs?", "ai_relevant": true, "clause_type": "data_retention" },
+        { "key": "accuracy_bias_testing", "type": "bool", "prompt": "Is bias / accuracy evaluation performed and documented?", "ai_relevant": true }
+      ]
+    },
+    {
+      "key": "data_residency",
+      "title": "Data residency & transfers",
+      "questions": [
+        { "key": "data_residency_regions", "type": "text", "prompt": "Where is customer data stored and processed?", "ai_relevant": true, "clause_type": "data_residency" },
+        { "key": "eu_uk_residency_option", "type": "bool", "prompt": "Is an EU/UK data-residency option offered?", "ai_relevant": true, "clause_type": "data_residency" },
+        { "key": "transfer_mechanism", "type": "enum", "prompt": "What transfer mechanism covers non-EEA transfers?", "options": ["adequacy", "sccs", "bcrs", "none", "not_applicable"], "ai_relevant": true, "clause_type": "data_residency" }
+      ]
+    },
+    {
+      "key": "sub_processors",
+      "title": "Sub-processors",
+      "questions": [
+        { "key": "sub_processors_list", "type": "text", "prompt": "List the sub-processors used to deliver the service.", "ai_relevant": true, "clause_type": "sub_processors" },
+        { "key": "sub_processor_notification", "type": "bool", "prompt": "Is advance notice given before adding or changing sub-processors?", "ai_relevant": false, "clause_type": "sub_processors" }
+      ]
+    },
+    {
+      "key": "security_certifications",
+      "title": "Security & certifications",
+      "questions": [
+        { "key": "iso_27001", "type": "bool", "prompt": "ISO/IEC 27001 certified?", "ai_relevant": false },
+        { "key": "iso_42001", "type": "bool", "prompt": "ISO/IEC 42001 (AI management system) certified?", "ai_relevant": true },
+        { "key": "soc2_type2", "type": "bool", "prompt": "SOC 2 Type II report available?", "ai_relevant": false },
+        { "key": "gdpr_dpa", "type": "bool", "prompt": "Is a GDPR-compliant Data Processing Agreement available?", "ai_relevant": false, "clause_type": "data_protection" }
+      ]
+    },
+    {
+      "key": "controls_oversight",
+      "title": "Controls & oversight",
+      "questions": [
+        { "key": "human_oversight_features", "type": "text", "prompt": "What human-oversight features does the product support?", "ai_relevant": true },
+        { "key": "logs_exportable", "type": "bool", "prompt": "Can customers export logs / audit trails?", "ai_relevant": true, "clause_type": "audit_rights" },
+        { "key": "audit_rights", "type": "bool", "prompt": "Does the customer have a right to audit (directly or via a third party)?", "ai_relevant": false, "clause_type": "audit_rights" },
+        { "key": "incident_notification_sla", "type": "text", "prompt": "What is the security / AI-incident notification SLA?", "ai_relevant": false, "clause_type": "security_obligations" }
+      ]
+    },
+    {
+      "key": "commercial",
+      "title": "Commercial & legal",
+      "questions": [
+        { "key": "ip_indemnity_genai", "type": "bool", "prompt": "Is IP indemnity provided for generative outputs?", "ai_relevant": true, "clause_type": "ip_indemnity" },
+        { "key": "liability_cap", "type": "text", "prompt": "What is the contractual liability cap?", "ai_relevant": false, "clause_type": "liability_cap" },
+        { "key": "data_deletion_on_termination", "type": "bool", "prompt": "Is data deletion on termination guaranteed and evidenced?", "ai_relevant": false, "clause_type": "data_deletion" }
+      ]
+    }
+  ]
+}
